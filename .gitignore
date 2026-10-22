@@ -9,3 +9,14 @@ BootShim.elf
 
 Mu-*.*
 *:Zone.Identifier
+
+# Local umi build/test artifacts and private inputs.
+.DS_Store
+*.pyc
+*.obj
+*.o
+.test-*
+.rpmh-test-*/
+/Platforms/Xiaomi/umiPkg/FdtBlob/
+/.cache/
+/out/
