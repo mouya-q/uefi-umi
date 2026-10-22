@@ -1,3 +1,4 @@
+#include "UmiSmmuTrace.h"
 /**
   Copyright (c) 2011-2017, ARM Limited. All rights reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -22,6 +23,7 @@
 extern UINT64  gSecEntryArg0;
 
 #ifndef MDEPKG_NDEBUG
+#ifndef UMI_SKIP_EARLY_FRAMEBUFFER
 STATIC
 VOID
 ClearFrameBuffer (VOID)
@@ -38,12 +40,16 @@ ClearFrameBuffer (VOID)
   }
 }
 
+#endif // UMI_SKIP_EARLY_FRAMEBUFFER
+
 STATIC
 VOID
 PrintFirmwareVersion (VOID)
 {
-  // Clear Frame Buffer
+  // umi has no qualified framebuffer until real GOP is installed.
+#ifndef UMI_SKIP_EARLY_FRAMEBUFFER
   ClearFrameBuffer ();
+#endif
 
   // Print UEFI Version Message
   DEBUG ((EFI_D_WARN, "\n"));
@@ -97,8 +103,13 @@ SecMain (VOID)
 {
   EFI_STATUS Status;
 
+  SerialPortInitialize ();
+  DEBUG ((EFI_D_ERROR, "UMI: SEC start\n"));
   // Do Platform Specific Initialization
+  UmiSmmuSnapshot ("before-platform");
   PlatformInitialize ();
+  UmiSmmuSnapshot ("after-platform");
+  DEBUG ((EFI_D_ERROR, "UMI: platform initialized\n"));
 
 #ifndef MDEPKG_NDEBUG
   // Initialize Serial Port
@@ -115,8 +126,10 @@ SecMain (VOID)
   SaveAndSetDebugTimerInterrupt (TRUE);
 #endif
 
+  DEBUG ((EFI_D_ERROR, "UMI: memory init start\n"));
   // Initialize Memory
   Status = InitializeMemory ();
+  DEBUG ((EFI_D_ERROR, "UMI: memory init returned %r\n", Status));
   if (EFI_ERROR (Status)) {
     return;
   }
@@ -127,8 +140,10 @@ SecMain (VOID)
   // Set the Boot Mode
   SetBootMode (BOOT_WITH_DEFAULT_SETTINGS);
 
+  DEBUG ((EFI_D_ERROR, "UMI: platform PEI start\n"));
   // Initialize Platform HOBs
   Status = PlatformPeim ();
+  DEBUG ((EFI_D_ERROR, "UMI: platform PEI returned %r\n", Status));
   if (EFI_ERROR (Status)) {
     return;
   }
@@ -144,13 +159,16 @@ SecMain (VOID)
   // Run Library Cconstructors
   ProcessLibraryConstructorList ();
 
+  DEBUG ((EFI_D_ERROR, "UMI: FV decompress start\n"));
   // Decompress all FVs
   Status = DecompressFirstFv ();
+  DEBUG ((EFI_D_ERROR, "UMI: FV decompress returned %r\n", Status));
   if (EFI_ERROR (Status)) {
     DEBUG ((EFI_D_ERROR, "Failed to Decompress FV! Status = %r\n", Status));
     return;
   }
 
+  DEBUG ((EFI_D_ERROR, "UMI: DXE core load start\n"));
   // Load DXE Core
   Status = LoadDxeCoreFromFv (NULL, 0);
   if (EFI_ERROR (Status)) {

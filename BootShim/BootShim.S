@@ -1,3 +1,7 @@
+/* Derived from uefi-sheng 329b473d BootShim.S; umi-only RAM trace.
+ * UMI0: shim reached; UMI1: FD copied. x0/x1 handoff is preserved.
+ * Only the reserved console header/data are changed; no pmsg or disk I/O.
+ */
 _Head:
   adr   x1, _Payload    /* Set _Entry address */
   b     _Start          /* Jump to the real code */
@@ -17,6 +21,20 @@ _StackSize:
 #endif
 
 _Start:
+  /* umi ramoops console header: confirmed in this kernel, ECC disabled. */
+  ldr   x12, =0xB0000000
+  ldr   w13, =0x43474244
+  str   w13, [x12]
+  ldr   w13, =0x30494d55
+  str   w13, [x12, #12]
+  mov   w13, #10
+  strb  w13, [x12, #16]
+  mov   w13, #5
+  str   w13, [x12, #4]
+  str   w13, [x12, #8]
+  dmb   sy
+  dc    cvac, x12
+  dsb   sy
   mov   x4, x1
   ldr   x5, =FD_BASE
   cmp   x4, x5
@@ -31,6 +49,20 @@ _CopyLoop:
   ldr   x5, =FD_BASE
 
 _Entry:
+  /* umi ramoops console header: confirmed in this kernel, ECC disabled. */
+  ldr   x12, =0xB0000000
+  ldr   w13, =0x43474244
+  str   w13, [x12]
+  ldr   w13, =0x31494d55
+  str   w13, [x12, #12]
+  mov   w13, #10
+  strb  w13, [x12, #16]
+  mov   w13, #5
+  str   w13, [x12, #4]
+  str   w13, [x12, #8]
+  dmb   sy
+  dc    cvac, x12
+  dsb   sy
   /* Publish the copied instructions before executing them. */
   dsb   sy
   mrs   x9, ctr_el0

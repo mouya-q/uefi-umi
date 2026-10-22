@@ -1,4 +1,5 @@
 #include <Library/BaseLib.h>
+#include <Library/DebugLib.h>
 #include <Library/ConfigurationMapLib.h>
 #include <Library/ConfigurationMapHelperLib.h>
 #include <Library/MemoryMapHelperLib.h>
@@ -9,16 +10,42 @@
 #include "ShimLibraries/EFIUefiConfig.h"
 #include "PlatformPei.h"
 
+// umi-only diagnostics: keep return values and ABI of the genuine config shim.
+STATIC EFI_STATUS UmiLocateRegion (CHAR8 *Name, EFI_MEMORY_REGION_DESCRIPTOR *Region)
+{
+  EFI_STATUS Status;
+  DEBUG ((EFI_D_ERROR, "UMI config region: %a\n", Name));
+  Status = LocateMemoryRegionByName (Name, Region);
+  DEBUG ((EFI_D_ERROR, "UMI config region returned %r\n", Status));
+  return Status;
+}
+STATIC EFI_STATUS UmiConfig32 (CHAR8 *Name, UINT32 *Value)
+{
+  EFI_STATUS Status;
+  DEBUG ((EFI_D_ERROR, "UMI config32: %a\n", Name));
+  Status = LocateConfigurationEntry32 (Name, Value);
+  DEBUG ((EFI_D_ERROR, "UMI config32 returned %r\n", Status));
+  return Status;
+}
+STATIC EFI_STATUS UmiConfig64 (CHAR8 *Name, UINT64 *Value)
+{
+  EFI_STATUS Status;
+  DEBUG ((EFI_D_ERROR, "UMI config64: %a\n", Name));
+  Status = LocateConfigurationEntry64 (Name, Value);
+  DEBUG ((EFI_D_ERROR, "UMI config64 returned %r\n", Status));
+  return Status;
+}
+
 //
 // UEFI Config Library
 //
 EFI_UEFI_CONFIG_LIBRARY
 ConfigLib = {
   0x10002,
-  LocateMemoryRegionByName,
+  UmiLocateRegion,
   LocateConfigurationEntryString,
-  LocateConfigurationEntry32,
-  LocateConfigurationEntry64, 
+  UmiConfig32,
+  UmiConfig64,
   LocateMemoryRegionByAddress
 };
 
@@ -59,6 +86,7 @@ ShimLoadLib (
   IN  UINT32   LibVersion,
   OUT VOID   **LibIntf)
 {
+  DEBUG ((EFI_D_ERROR, "UMI shim load: %a version 0x%x\n", LibName, LibVersion));
   // Very Parameters
   if (LibName == NULL || LibIntf == NULL) {
     return EFI_INVALID_PARAMETER;
