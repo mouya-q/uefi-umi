@@ -1,3 +1,6 @@
+> Historical bring-up notes: the dated observations below describe earlier stages.
+> Current status and build limitations are documented in the repository root README.
+
 # umi UEFI menu bring-up overlay
 
 This package is a DEBUG firmware candidate for Xiaomi Mi 10 / SM8250.

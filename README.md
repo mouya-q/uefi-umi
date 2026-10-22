@@ -1,40 +1,45 @@
-# Project Silicium UEFI for ARM64-Based Devices
+# uefi-umi — Xiaomi Mi 10
 
-[![Documentation](https://img.shields.io/badge/docs-unixnu.com-2A5BD7?logo=readthedocs&logoColor=white)](https://unixnu.com)
+[简体中文](README.zh-CN.md)
 
-UniXNU device documentation: [unixnu.com](https://unixnu.com).
+Mu-Silicium UEFI port for **Xiaomi Mi 10 (`umi`, SM8250)**, derived from
+[uefi-sheng](https://github.com/UniXNU/uefi-sheng). Paired with
+[UniXNU-umi](https://github.com/reAAAq/UniXNU-umi), the tested 12 GiB / 256 GB phone
+reaches iPadOS 17.7.11 Hello / Setup Assistant. Touch is not working.
 
-<!-- ![Banner](https://github.com/Project-Silicium/Mu-Silicium/blob/main/Resources/Pictures/Banner.png) -->
+## Verified firmware path
 
-## Description
+- Inherited framebuffer GOP, UniXNU menu and CPU text/pixel output.
+- Volume keys for selection, short power-key confirmation and warm restart.
+- Read-only RAM FAT payload, external EFI checks and DarwinBoot handoff.
+- Measured memory map, early RAM-console tracing and SMMU observations.
 
-This Project focuses on Making ARM-Based Devices Boot Operating Systems like Windows or Linux using Custom UEFI Firmware.
+`Platforms/Xiaomi/umiPkg` contains the board port;
+`Resources/Configs/umi.toml` describes the boot image. The checked-in platform is
+the staged inherited-display/buttons/RAM-payload profile. The device repository
+contains the input overlays and staging scripts. The experimental UEFI ST FTS
+code is retained for investigation and is not a working touch implementation.
 
-## Resources
+The early shim and SEC diagnostics use umi-specific addresses. This branch is
+for umi only; inherited configurations for other devices are not qualified here.
 
-- [Status](Status.md)
-- [Building](Building.md)
-- [Guides](https://github.com/Project-Silicium/Guides/blob/main/README.md)
-- [Discord Server](https://discord.gg/Dx2QgMx7Sv)
+## Build and inputs
 
-## Frequently asked Questions
+Use the source pins and [build notes](https://github.com/reAAAq/UniXNU-umi/blob/main/docs/BUILD.md)
+in the paired device repository. Its host builder stages the UniXNU package and
+DarwinBoot, applies Mu patches, imports locally verified firmware inputs and
+packs the board's measured DTB. Generic upstream build instructions alone do not
+reproduce this experimental profile. Do not substitute another board's DTB,
+memory map or partition layout.
 
-### **Is my Device Supported in this Project?**
-- To Check if your Device is Supported, Take a Look at the Status Page Referenced in the Section Above.
+No umi boot image, vendor firmware, device dump or Apple restore component is
+included. Existing upstream submodule links and resources retain their provenance.
+No general installer is provided, and there is no XNU USB-support claim based on
+Recovery ADB. Preserve a recovery route before experimenting.
 
-### **What do I do if my Device isn't Supported in this Project?**
-- We made some Guides that Explain How to Port your Device that are Referenced in the Section Above.
+## Credits and license
 
-## Credits
-
-[Microsoft](https://github.com/microsoft/) for their [Project Mu](https://microsoft.github.io/mu/) which Powers this Project. <br>
-[WOA-Project](https://github.com/WOA-Project/) for their [mu_andromeda_platforms](https://github.com/WOA-Project/mu_andromeda_platforms/) which is used as Base for this Project. <br>
-[Project Aloha](https://github.com/Project-Aloha/) for their [mu_aloha_platforms](https://github.com/Project-Aloha/mu_aloha_platforms/) which is used as Reference for some SoCs. <br>
-[Open Surface RT](https://openrt.gitbook.io/open-surfacert/) for their Help on Tegra Related Stuff.
-
-[sonic011gamer](https://github.com/sonic011gamer/) and [halal-beef](https://github.com/halal-beef/) for their Amazing Work on Exynos Related Stuff.
-
-## License
-
-All code except drivers in `GPLDrivers` & `GPLApplications` & `GPLLibrary` directories are licensed under BSD-2-Clause. <br />
-GPL Drivers are licensed under `GPLv2` or later license.
+The original project description, credits and license summary are preserved in
+[README.upstream.md](README.upstream.md). Existing directory and file licenses
+apply; new umi files carry their own SPDX notices. This is an independent port
+maintained by [reAAAq](https://github.com/reAAAq), not an official UniXNU device.
