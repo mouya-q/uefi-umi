@@ -5,7 +5,9 @@
 小米 10（umi / SM8250）的 Mu-Silicium UEFI 移植，基于
 [uefi-sheng](https://github.com/UniXNU/uefi-sheng)，配合
 [UniXNU-umi](https://github.com/reAAAq/UniXNU-umi) 使用。
-已在 12 GiB / 256 GB 手机上进入 iPadOS 17.7.11 Hello／设置向导，触摸尚不可用。
+已在 12 GiB / 256 GB 手机上进入 iPadOS 17.7.11 Hello／设置向导。
+第 80 版已由机主确认 XNU 下 ST FTS 触摸可用，修复代码位于配套设备仓库，
+见[验证摘要](https://github.com/reAAAq/UniXNU-umi/blob/main/docs/validation.json)。
 
 已验证继承显存 GOP、菜单、音量选择、电源短按确认、暖重启、只读 RAM FAT
 负载和 DarwinBoot 交接。`Platforms/Xiaomi/umiPkg` 为板级代码，

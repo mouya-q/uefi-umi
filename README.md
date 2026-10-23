@@ -5,7 +5,9 @@
 Mu-Silicium UEFI port for **Xiaomi Mi 10 (`umi`, SM8250)**, derived from
 [uefi-sheng](https://github.com/UniXNU/uefi-sheng). Paired with
 [UniXNU-umi](https://github.com/reAAAq/UniXNU-umi), the tested 12 GiB / 256 GB phone
-reaches iPadOS 17.7.11 Hello / Setup Assistant. Touch is not working.
+reaches iPadOS 17.7.11 Hello / Setup Assistant. Physical ST FTS touch under XNU
+was confirmed working by the device owner in attempt 80; the fix is in the paired
+device repository. See its [validation summary](https://github.com/reAAAq/UniXNU-umi/blob/main/docs/validation.json).
 
 ## Verified firmware path
 
