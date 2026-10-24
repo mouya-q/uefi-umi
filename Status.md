@@ -3329,6 +3329,57 @@
 </td></tr>
 </table>
 
+## Xiaomi Mi 10
+
+<img align="right" src="Resources/Pictures/Xiaomi-Mi-10.png" width="500" alt="Preview">
+
+**State:** Active <br>
+**Codename:** umi
+
+**Contributors:** [mouya-q](https://github.com/mouya-q/)
+
+### UEFI Status
+
+| Feature            | Description | State |
+|:-------------------|:------------|:-----:|
+| Display            |             | ❔    |
+| Internal Storage   |             | ❔    |
+| Side Buttons       |             | ❔    |
+| USB Host Mode      |             | ❔    |
+| USB Device Mode    |             | ❔    |
+| USB Power Delivery |             | ❔    |
+| SD Card            |             | ❔    |
+| Mass Storage       |             | ❔    |
+| Windows Boot       |             | ❔    |
+| Linux Boot         |             | ❔    |
+
+### OS Status
+
+<table>
+<tr><th>Windows</th></tr>
+<tr><td>
+
+> [!NOTE]
+> Status to be determined.
+
+| Feature              | Description | State |
+|:---------------------|:------------|:-----:|
+| Internal Storage     |             | ❔    |
+| Side Buttons         |             | ❔    |
+| Proximity Sensor     |             | ❔    |
+| Accelerometer Sensor |             | ❔    |
+| Compass Sensor       |             | ❔    |
+| Gyroscope Sensor     |             | ❔    |
+| Fingerprint Sensor  |             | ❔    |
+| NFC Sensor           |             | ❔    |
+| Camera               |             | ❔    |
+| Display              |             | ❔    |
+| Vibration            |             | ❔    |
+
+</td></tr>
+</table>
+
+
 ## Xiaomi Poco X3 Pro
 
 <img align="right" src="Resources/Pictures/Xiaomi-Poco-X3-Pro.png" width="500" alt="Preview">
