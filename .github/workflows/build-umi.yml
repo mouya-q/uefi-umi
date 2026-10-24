@@ -1,0 +1,118 @@
+name: Build umi UEFI firmware
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - '.github/workflows/build-umi.yml'
+      - 'Platforms/Xiaomi/umiPkg/**'
+  workflow_dispatch:
+
+env:
+  CI_BUILD: true
+
+jobs:
+  build-umi:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Checkout UniXNU framework
+        uses: actions/checkout@v4
+        with:
+          repository: mouya-q/UniXNU
+          path: UniXNU
+
+      - name: Clone DarwinBoot submodule
+        run: |
+          git clone --depth 1 https://github.com/UniXNU/DarwinBoot.git \
+            UniXNU/drivers/DarwinBoot
+
+      - name: Checkout UniXNU-umi (device board)
+        uses: actions/checkout@v4
+        with:
+          repository: mouya-q/UniXNU-umi
+          path: UniXNU-umi
+
+      - name: Setup build environment
+        run: |
+          bash ./setup_env.sh -p apt
+
+      - name: Stage UniXNUPkg, DarwinBootPkg, and umi overlays
+        run: |
+          # UniXNUPkg from UniXNU framework (real directory, not submodule)
+          cp -r UniXNU/package/UniXNUPkg ./UniXNUPkg
+
+          # DarwinBootPkg from DarwinBoot submodule
+          cp -r UniXNU/drivers/DarwinBoot/DarwinBootPkg ./DarwinBootPkg
+
+          # umi-specific PackedRamdisk.h
+          cp UniXNU-umi/package/darwinboot/PackedRamdisk.h \
+             DarwinBootPkg/Driver/PackedRamdisk.h
+
+          # umi overlay files (BootShim, Platforms, Resources, Silicon)
+          cp -r UniXNU-umi/overlay/* ./
+
+      - name: Create umi DeviceBuild.py
+        working-directory: Platforms/Xiaomi/umiPkg
+        run: |
+          cp ../cepheusPkg/DeviceBuild.py ./DeviceBuild.py
+          sed -i 's/cepheus/umi/g' ./DeviceBuild.py
+          sed -i 's/cepheusPkg/umiPkg/g' ./DeviceBuild.py
+          sed -i 's/"RELEASE", "DEBUG"/"DEBUG"/g' ./DeviceBuild.py
+          sed -i 's|PackagesPath = (|PackagesPath = (\n        "UniXNUPkg",\n        "DarwinBootPkg",|' ./DeviceBuild.py
+
+      - name: Apply umi-specific MuPatches
+        run: |
+          cd Mu_Basecore
+          # Gic-Spurious: mask spurious GIC interrupts
+          git apply ../Resources/MuPatches/Gic-Spurious.patch
+          echo "Applied: Gic-Spurious"
+          # Dxe-Trace: prerequisite for Display-Services-Trace
+          git apply ../Resources/MuPatches/Dxe-Trace.patch
+          echo "Applied: Dxe-Trace"
+          # Display-Services-Trace: DXE dispatch trace + DisplayDxe instrumentation
+          git apply ../Resources/MuPatches/Display-Services-Trace.patch
+          echo "Applied: Display-Services-Trace"
+
+      - name: Build umi UEFI
+        run: |
+          python3 build_uefi.py -d umi -r DEBUG -c -m 0
+
+      - name: Upload UEFI image
+        uses: actions/upload-artifact@v4
+        with:
+          name: umi-uefi-image
+          path: ./Mu-umi*
+          compression-level: 9
+
+      - name: Upload UEFI FD
+        uses: actions/upload-artifact@v4
+        with:
+          name: umi-uefi-fd
+          path: Build/umiPkg/DEBUG_CLANGPDB/FV/SILICIUM_UEFI.fd
+          compression-level: 9
+
+      - name: Upload BootShim
+        uses: actions/upload-artifact@v4
+        with:
+          name: umi-bootshim
+          path: |
+            BootShim/BootShim.elf
+            BootShim/BootShim.bin
+          compression-level: 9
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: umi-build-logs
+          path: |
+            Build/umiPkg/DEBUG_CLANGPDB/*.log
+            Build/umiPkg/DEBUG_CLANGPDB/*.txt
+          compression-level: 9
+          if-no-files-found: warn
