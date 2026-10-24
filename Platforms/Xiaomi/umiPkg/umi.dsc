@@ -42,6 +42,7 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdEmuVariableNvModeEnable|TRUE
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdCapsuleInRamSupport|FALSE
+  gUniXNUPkgTokenSpaceGuid.PcdUniXNUDebugLevel|0x80000000
 
 [PcdsFeatureFlag]
   gEfiMdeModulePkgTokenSpaceGuid.PcdSupportUpdateCapsuleReset|FALSE
@@ -56,10 +57,13 @@
   SecureBootHandlerLib|umiPkg/Library/NullSecureBootHandlerLib/NullSecureBootHandlerLib.inf
   AcpiTableUpdateLib|SiliciumNullPkg/Library/AcpiTableUpdateLibNull/AcpiTableUpdateLibNull.inf
   RamManagerLib|SiliciumNullPkg/Library/RamManagerLibNull/RamManagerLibNull.inf
+  UniXNULib|UniXNUPkg/Library/UniXNULib/UniXNULib.inf
   FdtLib|MdePkg/Library/BaseFdtLib/BaseFdtLib.inf
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
 
 [Components]
+  UniXNUPkg/Application/UniXNU/UniXNU.inf
+  UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
 
 [Components]
   umiPkg/Drivers/InheritedFbDxe/InheritedFbDxe.inf
@@ -83,3 +87,4 @@
   umiPkg/Application/UmiMemoryDiag/UmiMemoryDiag.inf
 
 [Components]
+  DarwinBootPkg/Driver/DarwinBoot.inf
