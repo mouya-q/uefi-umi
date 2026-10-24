@@ -29,4 +29,3 @@
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
   INF FatPkg/EnhancedFatDxe/Fat.inf
   INF umiPkg/Drivers/UmiRamPayloadDxe/UmiRamPayloadDxe.inf
-  INF DarwinBootPkg/Driver/DarwinBoot.inf
