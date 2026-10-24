@@ -39,8 +39,6 @@ READ_LOCK_STATUS   = TRUE
   !include Include/DXE.inc
   !include Include/RAW.inc
 
-  INF UniXNUPkg/Application/UniXNU/UniXNU.inf
-  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
   INF MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
   INF PcBdsPkg/MsBootPolicy/MsBootPolicy.inf
 
