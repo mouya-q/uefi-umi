@@ -22,12 +22,10 @@ APRIORI DXE {
   INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
   INF FatPkg/EnhancedFatDxe/Fat.inf
   INF umiPkg/Drivers/UmiRamPayloadDxe/UmiRamPayloadDxe.inf
-  INF DarwinBootPkg/Driver/DarwinBoot.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
   INF umiPkg/Drivers/UmiButtonsDxe/UmiButtonsDxe.inf
   INF MdeModulePkg/Universal/Console/ConPlatformDxe/ConPlatformDxe.inf
   INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
   INF umiPkg/Drivers/InheritedFbDxe/InheritedFbDxe.inf
   INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
-  INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
 }
